@@ -1,8 +1,9 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
 #ifndef BOOLEFUNCTIONS
 #define BOOLEFUNCTIONS
 
 #include "MyNatural.hpp"
-#include "MyBoolTree.hpp"
 #include <string>
 #include <utility>
 
@@ -177,6 +178,74 @@ namespace ft
 		return result;
 	}
 
+	void	_printTruthTableRecursive(std::string str, std::string::size_type idx)
+	{
+		if (idx == str.size())
+		{
+			std::cout << '|';
+			for (char boolean : str)
+			{
+				if (std::isdigit(boolean))
+					std::cout << ' ' << boolean << " |";
+			}
+			std::pair<bool, bool>	result = booleanEvaluation(str);
+			if (!result.second)
+				std::cout << "Err|\n";
+			else
+			{
+				if (result.first)
+					std::cout << " 1 |\n";
+				else
+					std::cout << " 0 |\n";
+			}
+		}
+		else if (std::isupper(str[idx]))
+		{
+			str[idx] = '0';
+			_printTruthTableRecursive(str, idx + 1);
+			str[idx] = '1';
+			_printTruthTableRecursive(str, idx + 1);
+		}
+		else
+			_printTruthTableRecursive(str, idx + 1);
+	}
+
+	void	printTruthTable(const std::string &str)
+	{
+		char	variables[26];
+		size_t	size = 0;
+		for (char check : str)
+		{
+			if (std::isupper(check))
+			{
+				variables[size] = check;
+				++size;
+				for (size_t i = 0; i < size - 1; ++i)
+				{
+					if (variables[i] == variables[size - 1])
+					{
+						std::cout << "error: your input got some identical variables\n";
+						return ;
+					}
+				}
+			}
+		}
+		std::cout << "| ";
+		for (size_t i = 0; i < size; ++i)
+		{
+			std::cout << variables[i] << " | ";
+		}
+		std::cout << "= |\n|";
+		for (size_t i = 0; i < size; ++i)
+		{
+			std::cout << "---|";
+		}
+		std::cout << "---|\n";
+		std::string::size_type idx = 0;
+		_printTruthTableRecursive(str, idx);
+	}
+
 }
 
 #endif
+#pragma clang diagnostic pop
