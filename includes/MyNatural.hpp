@@ -29,8 +29,10 @@ namespace ft
 		MyNatural(const MyNatural &other) {*this = other;}
 		MyNatural	&operator=(const MyNatural &other)
 		{
-			for (int i = 0; i < _bitSize; ++i)
-				_n[i] = other._n[i];
+			if (&other != this) {
+				for (int i = 0; i < _bitSize; ++i)
+					_n[i] = other._n[i];
+			}
 			return *this;
 		}
 
