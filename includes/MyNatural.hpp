@@ -39,7 +39,7 @@ namespace ft
 		//GETTER
 
 		const bool	*getData() const {return _n;}
-		const int	getSize() const {return _bitSize;}
+		int	getSize() const {return _bitSize;}
 		unsigned int	getUnsignedInt() const
 		{
 			unsigned int	displayable = 0;

@@ -25,9 +25,10 @@ namespace ft
 			std::cout << "b      = " << MyNatural(b) << '\n';
 			unsigned int	retain = 0;
 			unsigned int	compareTo = 1;
+			unsigned int	next;
 			for (int i = 0; i < 32; ++i)
 			{
-				unsigned int	next = compareTo << 1;
+				next = compareTo << 1;
 				bool bitA = a & compareTo;
 				bool bitB = b & compareTo;
 				if (bitB)
@@ -521,6 +522,16 @@ namespace ft
 		_transformXor(result);
 		_negationNormalFormRecursive(result);
 		return result;
+	}
+
+	std::string disjunctiveNormalForm(const std::string& str)
+	{
+		
+	}
+
+	std::string conjunctiveNormalForm(const std::string& str)
+	{
+
 	}
 
 }
