@@ -4,8 +4,11 @@
 #define BOOLEFUNCTIONS
 
 #include "MyNatural.hpp"
+#include <cmath>
 #include <string>
 #include <utility>
+#include <set>
+#include <map>
 
 namespace ft
 {
@@ -264,6 +267,42 @@ namespace ft
 			_printTruthTableRecursive(str, idx + 1, construct);
 	}
 
+	void	_printTruthTableRecursiveV2(std::string str, std::string& construct, std::set<char> alphas)
+	{
+		std::string				cpy;
+		char					toBoolAssign;
+		std::pair<bool, bool>	result;
+
+		if (alphas.empty())
+		{
+			std::cout << construct;
+			result = booleanEvaluation(str);
+			if (!result.second)
+				std::cout << "|Err|\n";
+			else
+			{
+				if (result.first)
+					std::cout << "| 1 |\n";
+				else
+					std::cout << "| 0 |\n";
+			}
+		}
+		else
+		{
+			cpy = str;
+			toBoolAssign = (*alphas.begin());
+			alphas.erase(alphas.begin());
+			_replaceValueInString(str, toBoolAssign, '0');
+			construct += "| 0 ";
+			_printTruthTableRecursiveV2(str, construct, alphas);
+			_replaceValueInString(cpy, toBoolAssign, '1');
+			construct.erase(construct.size() - 4);
+			construct += "| 1 ";
+			_printTruthTableRecursiveV2(cpy, construct, alphas);
+			construct.erase(construct.size() - 4);
+		}
+	}
+
 	void	printTruthTable(const std::string &str)
 	{
 		char	variables[26];
@@ -301,6 +340,26 @@ namespace ft
 		std::string::size_type idx = 0;
 		std::string construct;
 		_printTruthTableRecursive(str, idx, construct);
+	}
+
+	void printTruthTableV2(const std::string& str)
+	{
+		std::set<char> alphas;
+		std::string construct;
+
+		for (char c : str)
+		{
+			if (std::isupper(c))
+				alphas.insert(c);
+		}
+		std::cout << "| ";
+		for (std::set<char>::const_iterator cit = alphas.begin(); cit != alphas.end(); ++cit)
+			std::cout << *cit << " | ";
+		std::cout << "= |\n|";
+		for (std::set<char>::size_type i = 0; i <= alphas.size(); ++i)
+			std::cout << "---|";
+		std::cout << '\n';
+		_printTruthTableRecursiveV2(str, construct, alphas);
 	}
 
 	void	_transformMaterialConditionRecursive(std::string &str, std::string::size_type &idx)
@@ -524,14 +583,127 @@ namespace ft
 		return result;
 	}
 
-	std::string disjunctiveNormalForm(const std::string& str)
+	void	_negationNormalForm(std::string &str)
 	{
-		
+		_transformMaterialCondition(str);
+		_transformEquivalence(str);
+		_transformXor(str);
+		_negationNormalFormRecursive(str);
+	}
+
+	/*std::string disjunctiveNormalForm(const std::string& str)
+	{
+		typedef std::pair<char, bool> elt;
+		std::string negat(str);
+		std::string result;
+		std::string::size_type idx;
+		std::
+		negat += '!';
+		_negationNormalForm(negat);
+		idx = negat.size() - 1;
+
+
+		return result;
 	}
 
 	std::string conjunctiveNormalForm(const std::string& str)
 	{
+		std::string result;
 
+		if (!_isGoodBooleanFormula(str))
+			return {};
+		result = disjunctiveNormalForm(str);
+		result += '!';
+		_negationNormalForm(result);
+		return result;
+	}*/
+	typedef std::map<char, bool>	fComb; //represent a map of pair (atom, state) which has booleanEvaluation to false.
+
+	void	_getFalseSets(std::string str, std::set<char> alphas, std::set<fComb>& allFalseSets, fComb& currentSet)
+	{
+		std::string				cpy;
+		char					toBoolAssign;
+		std::pair<bool, bool>	result;
+
+		if (alphas.empty())
+		{
+			result = booleanEvaluation(str);
+			if (!result.first)
+				allFalseSets.insert(currentSet);
+		}
+		else
+		{
+			cpy = str;
+			toBoolAssign = (*alphas.begin());
+			alphas.erase(alphas.begin());
+			_replaceValueInString(str, toBoolAssign, '0');
+			currentSet[toBoolAssign] = false;
+			_getFalseSets(str, alphas, allFalseSets, currentSet);
+			_replaceValueInString(cpy, toBoolAssign, '1');
+			currentSet[toBoolAssign] = true;
+			_getFalseSets(cpy, alphas, allFalseSets, currentSet);
+		}
+	}
+
+	std::string	_buildConjonctiveNormalForm(const std::set<fComb>& combs, double max)
+	{
+		std::string result;
+
+		if (combs.empty())
+			return "1";
+		if (combs.size() == max)
+			return "0";
+		for (std::set<fComb>::const_iterator cit = combs.begin(); cit != combs.end(); ++cit)
+		{
+			for (fComb::const_iterator fcit = cit->begin(); fcit != cit->end(); ++fcit)
+			{
+				result += fcit->first;
+				if (fcit->second)
+					result += '!';
+			}
+			result.insert(result.end(), cit->size() - 1, '|');
+		}
+		result.insert(result.end(), combs.size() - 1, '&');
+		return result;
+	}
+
+	/**
+	  * A conjunction can be built thanks of all set of atoms states which return false.
+	  * Then we can revert all those atom states (a -> a!, b! -> b) in each set, and
+	  * disjontiv them each other ({a, b!, ..., n} -> (a v b! v ... v n)), then
+	  * conjunctiv each disjonction
+	  */
+	std::string conjunctiveNormalForm(const std::string& str)
+	{
+		std::set<char>	alphas;
+		std::set<fComb>	allFalseSets;
+		fComb			current;
+
+		if (!_isGoodBooleanFormula(str))
+			return {};
+		for (char c : str)
+		{
+			if (std::isupper(c))
+				alphas.insert(c);
+		}
+		if (alphas.empty())
+		{
+			if (booleanEvaluation(str).first)
+				return "1";
+			return "0";
+		}
+		_getFalseSets(str, alphas, allFalseSets, current);
+
+		return _buildConjonctiveNormalForm(allFalseSets, pow(2, alphas.size()));
+	}
+
+	bool	sat(const std::string& str)
+	{
+		std::string conj = conjunctiveNormalForm(str);
+
+		if (conj.empty() || conj == "0")
+			return false;
+		return true;
 	}
 
 }

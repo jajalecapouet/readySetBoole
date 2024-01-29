@@ -15,7 +15,7 @@ int main()
 		}
 		if (input == "quit")
 			break;
-		printTruthTable(input);
+		printTruthTableV2(input);
 		std::cout << '\n';
 	}
 	return 0;

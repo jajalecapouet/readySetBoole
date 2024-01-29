@@ -16,7 +16,7 @@ int main()
 		}
 		if (input == "quit" || input == "exit" || input == "end" || input == "tg")
 			break;
-		std::string	ficelle = negationNormalForm(input);
+		std::string	ficelle = conjunctiveNormalForm(input);
 		if (!ficelle.empty())
 		{
 			std::cout << ficelle;
