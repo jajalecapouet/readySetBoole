@@ -9,6 +9,7 @@
 #include <utility>
 #include <set>
 #include <map>
+#include <vector>
 
 namespace ft
 {
@@ -704,6 +705,45 @@ namespace ft
 		if (conj.empty() || conj == "0")
 			return false;
 		return true;
+	}
+
+	void _recuPowerSet(std::vector<int> atoms, std::vector<int>::size_type depth, std::vector<int>& current, std::vector<std::vector<int> >& pwrSet)
+	{
+		if (depth == 0)
+			pwrSet.push_back(current);
+		else
+		{
+			while (depth <= atoms.size())
+			{
+				current.push_back(atoms.back());
+				atoms.pop_back();
+				_recuPowerSet(atoms, depth - 1, current, pwrSet);
+				current.pop_back();
+			}
+		}
+	}
+
+	std::vector<std::vector<int> >	powerset(const std::vector<int>& atoms)
+	{
+		typedef std::vector<std::vector<int> >	Powerset;
+		typedef std::vector<int>::size_type	Size;
+
+		std::vector<int>	current;
+		Powerset			pwrSet;
+		for (Size depth = 0; depth <= atoms.size(); ++depth)
+		{
+			_recuPowerSet(atoms, depth, current, pwrSet);
+		}
+		return pwrSet;
+	}
+
+	std::vector<int>	eval_set(const std::string& str, const std::vector<std::vector<int> >& sets)
+	{
+		std::string result;
+
+		
+
+		return result;
 	}
 
 }
