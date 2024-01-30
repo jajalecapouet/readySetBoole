@@ -737,13 +737,31 @@ namespace ft
 		return pwrSet;
 	}
 
-	std::vector<int>	eval_set(const std::string& str, const std::vector<std::vector<int> >& sets)
-	{
-		std::string result;
+	
 
-		
+	std::vector<int>	_evalSetConjForm(const std::string& str, const std::vector<std::vector<int> >& sets)
+	{
+		std::vector<int> result;
 
 		return result;
+	}
+
+	std::vector<int>	eval_set(const std::string& str, const std::vector<std::vector<int> >& sets)
+	{
+		std::string conj;
+
+		if (str.empty() || sets.empty())
+		{
+			std::cout << "empty inputs.\n";
+			return {};
+		}
+		conj = conjunctiveNormalForm(str);
+		if (conj.empty())
+		{
+			std::cout << "the formula has wrong format.\n";
+			return {};
+		}
+		return _evalSetConjForm(conj, sets);
 	}
 
 }
