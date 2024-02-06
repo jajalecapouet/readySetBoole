@@ -7,6 +7,7 @@
 #include <cmath>
 #include <string>
 #include <utility>
+#include <algorithm>
 #include <set>
 #include <map>
 #include <vector>
@@ -737,18 +738,54 @@ namespace ft
 		return pwrSet;
 	}
 
-	
-
-	std::vector<int>	_evalSetConjForm(const std::string& str, const std::vector<std::vector<int> >& sets)
+	std::set<int>&	_joinSets(std::set<int>& lhs, std::set<int>& rhs)
 	{
-		std::vector<int> result;
+		std::set<int>& smaller = lhs.size() < rhs.size() ? lhs : rhs;
+		std::set<int>& bigger = lhs.size() >= rhs.size() ? lhs : rhs;
 
-		return result;
+		for (std::set<int>::const_iterator cit = smaller.begin(); cit != smaller.end(); ++cit)
+			bigger.insert(*cit);
+		return bigger;
+	}
+
+	std::set<int>&	_interSets(std::set<int>& lhs, std::set<int>& rhs)
+	{
+		std::set<int>& smaller = lhs.size() < rhs.size() ? lhs : rhs;
+		std::set<int>& bigger = lhs.size() >= rhs.size() ? lhs : rhs;
+
+		std::set<int>::iterator it = smaller.begin();
+		while (it != smaller.end())
+		{
+			if (bigger.find(*it) == bigger.end())
+				it = smaller.erase(it);
+			else
+				++it;
+		}
+		return smaller;
+	}
+
+	std::set<int>&	_negateSet(std::set<int>& set)
+	{
+		set.clear();
+		return set;
+	}
+
+	std::set<int>	_assignSet(char c, const std::vector<std::set<int> >& sets)
+	{
+		return sets[c - 'A'];
+	}
+
+	std::vector<int>	_evalSetConjForm(const std::string& str, const std::vector<std::set<int> >& sets)
+	{
+		std::set<int> result;
+
+		return std::vector<int>(result.begin(), result.end());
 	}
 
 	std::vector<int>	eval_set(const std::string& str, const std::vector<std::vector<int> >& sets)
 	{
 		std::string conj;
+		std::vector<std::set<int> > trueSets;
 
 		if (str.empty() || sets.empty())
 		{
@@ -761,7 +798,9 @@ namespace ft
 			std::cout << "the formula has wrong format.\n";
 			return {};
 		}
-		return _evalSetConjForm(conj, sets);
+		for (std::vector<int> set : sets)
+			trueSets.push_back(std::set<int>(set.begin(), set.end()));
+		return _evalSetConjForm(conj, trueSets);
 	}
 
 }
