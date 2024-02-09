@@ -95,7 +95,7 @@ namespace ft
 	bool	_isGoodBooleanFormulaRecursive(const std::string &str, std::string::size_type &idx)
 	{
 		if (idx == std::string::npos
-			|| (idx <= 1 && !(isBool(str[idx]) || std::isupper(str[idx])) && str[idx] != '!')
+			|| (idx <= 1 && !(isBool(str[idx]) || std::isupper(str[idx]) || str[idx] == '!'))
 			|| (!idx && str[idx] == '!'))
 			return false;
 		if (isBool(str[idx]) || std::isupper(str[idx]))
@@ -105,7 +105,9 @@ namespace ft
 		std::string	cmp("=&>^|");
 		if (cmp.find(str[idx]) == std::string::npos)
 			return false;
-		return (_isGoodBooleanFormulaRecursive(str, --idx) & _isGoodBooleanFormulaRecursive(str, --idx));
+		if (!_isGoodBooleanFormulaRecursive(str, --idx))
+			return false;
+		return (_isGoodBooleanFormulaRecursive(str, --idx));
 	}
 
 	bool	_isGoodBooleanFormula(const std::string &str)
