@@ -745,6 +745,7 @@ namespace ft
 
 		for (std::set<int>::const_iterator cit = smaller.begin(); cit != smaller.end(); ++cit)
 			bigger.insert(*cit);
+		delete (&smaller);
 		return bigger;
 	}
 
@@ -761,6 +762,7 @@ namespace ft
 			else
 				++it;
 		}
+		delete (&bigger);
 		return smaller;
 	}
 
@@ -770,18 +772,52 @@ namespace ft
 		return set;
 	}
 
-	std::set<int>	_assignSet(char c, const std::vector<std::set<int> >& sets)
+	std::set<int>&	_assignSet(char c, const std::vector<std::set<int> >& sets)
 	{
-		return sets[c - 'A'];
+		std::set<int>* toRet;
+	
+		try
+		{
+			toRet = new std::set<int>(sets.at(c - 'A'));
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+			std::cout << "Bad input given, a set couldn't be assignate\n";
+			toRet = new std::set<int>();
+		}
+		return *toRet;
+	}
+
+	std::set<int>&	_recuEvalSetConjForm(const std::string& str, const std::vector<std::set<int> >& sets, std::string::size_type& idx)
+	{
+		switch (str[idx])
+		{
+			case '!':
+				return _negateSet(_recuEvalSetConjForm(str, sets, --idx));
+			case '|':
+				return _joinSets(_recuEvalSetConjForm(str, sets, --idx), _recuEvalSetConjForm(str, sets, --idx));
+			case '&':
+				return _interSets(_recuEvalSetConjForm(str, sets, --idx), _recuEvalSetConjForm(str, sets, --idx));
+			default:
+				return _assignSet(str[idx], sets);
+		}
 	}
 
 	std::vector<int>	_evalSetConjForm(const std::string& str, const std::vector<std::set<int> >& sets)
 	{
-		std::set<int> result;
+		std::string::size_type recuIdxStart = str.size() - 1;
+		std::set<int>& finalSet = _recuEvalSetConjForm(str, sets, recuIdxStart);
+		std::vector<int> result(finalSet.begin(), finalSet.end());
 
-		return std::vector<int>(result.begin(), result.end());
+		delete (&finalSet);
+		return result;
 	}
 
+	/// @brief Apply the formula to the list of sets
+	/// @param str a propositional formula in reverse polish notation
+	/// @param sets a list of sets as vector of vector of int
+	/// @return a set resulted by the evaluation of the list of set by the formula
 	std::vector<int>	eval_set(const std::string& str, const std::vector<std::vector<int> >& sets)
 	{
 		std::string conj;
@@ -798,6 +834,7 @@ namespace ft
 			std::cout << "the formula has wrong format.\n";
 			return {};
 		}
+		std::cout << "conjonctive form : " << conj << '\n';
 		for (std::vector<int> set : sets)
 			trueSets.push_back(std::set<int>(set.begin(), set.end()));
 		return _evalSetConjForm(conj, trueSets);
