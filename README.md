@@ -1,4 +1,4 @@
-Projet très agréable de 42 permettant de nous entraîner sur les récursion et d'en apprendre beaucoup sur la logique booléenne, ainsi que sur la topologie des ensembles.
+Projet très agréable de 42 permettant de nous entraîner sur la récursion et d'en apprendre beaucoup sur la logique booléenne, ainsi que sur la topologie des ensembles.
 
 ![image](https://github.com/jajalecapouet/readySetBoole/assets/90960943/8267491b-168b-4056-b148-ae29618b9b71)
 
