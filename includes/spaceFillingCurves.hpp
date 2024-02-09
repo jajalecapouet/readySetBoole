@@ -7,7 +7,8 @@
 
 namespace ft
 {
-	typedef __UINT16_TYPE__ ui;
+	typedef unsigned short us;
+	const us BASE = 2;
 
 	/// @brief map coordinates (x, y) in a range [0, 1].
 	/// The goal of the exercise isn't to abuse to the mantiss which is able binarely to contain easily x and y separately.
@@ -15,59 +16,64 @@ namespace ft
 	/// @param x the x coordinate
 	/// @param y the y coordinate
 	/// @return the double in range [0, 1] which map the coordinates (x, y)
-	double map(ui x, ui y)
+	us _getMaxWeigth()
+	{
+		us a = 1;
+		us b = 0;
+
+		if (BASE == 2)
+			return 32768;
+		while (a > b)
+		{
+			b = a;
+			a *= BASE;
+		}
+		return b;
+	}
+
+	double map(us x, us y)
 	{
 		double res;
-		unsigned int divide = 10;
+		us weigth = _getMaxWeigth();
+		double divide = BASE;
 
 		res = 0;
-		while (x)
+		while (weigth)
 		{
-			res += (double)(x % 10) / divide;
-			x /= 10;
-			divide *= 100;
-		}
-		divide = 100;
-		while (y)
-		{
-			res += (double)(y % 10) / divide;
-			divide *= 100;
-			y /= 10;
+			if (x >= weigth)
+			{
+				res += ((double)(x / weigth) / divide);
+				x -= weigth;
+			}
+			divide *= BASE;
+			if (y >= weigth)
+			{
+				res += ((double)(y / weigth) / divide);
+				y -= weigth;
+			}
+			divide *= BASE;
+			weigth /= BASE;
 		}
 		return res;
 	}
 
-	std::pair<ui, ui> reverse_map(double d)
+	std::pair<us, us> reverse_map(double d)
 	{
-		std::pair<ui, ui> res;
-		ui xMlt;
-		ui yMlt;
-		bool xTurn;
-		ui part;
+		std::pair<us, us> res;
+		us weigth = _getMaxWeigth();
+		us part;
 
-		xMlt = 1;
-		yMlt = 1;
-		xTurn = true;
-		while (d != 0)
+		while (weigth)
 		{
-			std::cout << "d = " << d << '\n';
-			d *= 10;
+			d *= BASE;
 			part = d;
-			std::cout << "d = " << d << '\n';
-			std::cout << "part = " << part << '\n';
 			d -= part;
-			std::cout << "d = " << d << '\n';
-			if (xTurn)
-			{
-				res.first += part * xMlt;
-				xMlt *= 10;
-			}
-			else
-			{
-				res.second += part * yMlt;
-				yMlt *= 10;
-			}
-			xTurn = !xTurn;
+			res.first += part * weigth;
+			d *= BASE;
+			part = d;
+			d -= part;
+			res.second += part * weigth;
+			weigth /= BASE;
 		}
 		return res;
 	}
