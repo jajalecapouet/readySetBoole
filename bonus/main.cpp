@@ -1,6 +1,7 @@
 #include "../includes/spaceFillingCurves.hpp"
 #include <iostream>
 #include <map>
+#include <fstream>
 
 int main()
 {
@@ -14,10 +15,12 @@ int main()
 
 	std::cout << "check for curve\n";
 
+	std::ofstream out("jaja.csv");
+
 	double d2 = 0;
-	for (ft::us y = 0; y < 20; ++y)
+	for (ft::us y = 0; y < 200; ++y)
 	{
-		for (ft::us x = 0; x < 20; ++x)
+		for (ft::us x = 0; x < 200; ++x)
 		{
 			coord.first = x;
 			coord.second = y;
@@ -25,10 +28,10 @@ int main()
 		}
 	}
 
+	out << "x,y\n";
 	for (Curve::const_iterator cit = curve.begin(); cit != curve.end(); ++cit)
-	{
-		std::cout << cit->first << " | " << cit->second.first << " | " << cit->second.second << '\n';
-	}
+		out << cit->second.first << "," << cit->second.second << '\n';
+	out.close();
 
 	std::cout << "ULTIMATE TEST : " << '\n';
 
