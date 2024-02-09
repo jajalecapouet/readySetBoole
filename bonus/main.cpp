@@ -13,14 +13,13 @@ int main()
 	std::pair<ft::us, ft::us> coord = ft::reverse_map(d);
 	std::cout << coord.first << " | " << coord.second << '\n';
 
-	std::cout << "check for curve\n";
+	std::cout << "creating csv file of my space filling curve function\n";
 
 	std::ofstream out("jaja.csv");
 
-	double d2 = 0;
-	for (ft::us y = 0; y < 200; ++y)
+	for (ft::us y = 0; y < 40; ++y)
 	{
-		for (ft::us x = 0; x < 200; ++x)
+		for (ft::us x = 0; x < 40; ++x)
 		{
 			coord.first = x;
 			coord.second = y;
@@ -32,6 +31,8 @@ int main()
 	for (Curve::const_iterator cit = curve.begin(); cit != curve.end(); ++cit)
 		out << cit->second.first << "," << cit->second.second << '\n';
 	out.close();
+
+	std::cout << "file done\n";
 
 	std::cout << "ULTIMATE TEST : " << '\n';
 
