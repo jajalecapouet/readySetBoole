@@ -5,6 +5,10 @@
 
 namespace ft
 {
+	/**
+	 * @brief This class build a 32 sized array of bits to represents an unsigned int.
+	 * 
+	 */
 	class MyNatural
 	{
 	protected:
