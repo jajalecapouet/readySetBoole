@@ -751,38 +751,38 @@ namespace ft
 		return *toRet;
 	}
 
-	std::set<int>&	_recuEvalSetConjForm(const std::string& str, const std::vector<std::set<int> >& sets, std::string::size_type& idx)
+	std::set<int>&	_recuEvalSetNegativeForm(const std::string& str, const std::vector<std::set<int> >& sets, std::string::size_type& idx)
 	{
+		std::set<int> *lhs; // This variable is to avoid a warning from Werror : -Wunsequenced
+
 		switch (str[idx])
 		{
 			case '!':
 				return _negateSet(_recuEvalSetConjForm(str, sets, --idx));
 			case '|':
-				return _joinSets(_recuEvalSetConjForm(str, sets, --idx), _recuEvalSetConjForm(str, sets, --idx));
+				lhs = &_recuEvalSetConjForm(str, sets, --idx);
+				return _joinSets(*lhs, _recuEvalSetConjForm(str, sets, --idx));
 			case '&':
-				return _interSets(_recuEvalSetConjForm(str, sets, --idx), _recuEvalSetConjForm(str, sets, --idx));
+				lhs = &_recuEvalSetConjForm(str, sets, --idx);
+				return _interSets(*lhs, _recuEvalSetConjForm(str, sets, --idx));
 			default:
 				return _assignSet(str[idx], sets);
 		}
 	}
 
-	std::vector<int>	_evalSetConjForm(const std::string& str, const std::vector<std::set<int> >& sets)
+	std::vector<int>	_evalSetNegativeForm(const std::string& str, const std::vector<std::set<int> >& sets)
 	{
 		std::string::size_type recuIdxStart = str.size() - 1;
-		std::set<int>& finalSet = _recuEvalSetConjForm(str, sets, recuIdxStart);
+		std::set<int>& finalSet = _recuEvalSetNegativeForm(str, sets, recuIdxStart);
 		std::vector<int> result(finalSet.begin(), finalSet.end());
 
 		delete (&finalSet);
 		return result;
 	}
 
-	/// @brief Apply the formula to the list of sets
-	/// @param str a propositional formula in reverse polish notation
-	/// @param sets a list of sets as vector of vector of int
-	/// @return a set resulted by the evaluation of the list of set by the formula
 	std::vector<int>	eval_set(const std::string& str, const std::vector<std::vector<int> >& sets)
 	{
-		std::string conj;
+		std::string neg;
 		std::vector<std::set<int> > trueSets;
 
 		if (str.empty() || sets.empty())
@@ -790,15 +790,15 @@ namespace ft
 			std::cout << "empty inputs.\n";
 			return {};
 		}
-		conj = conjunctiveNormalForm(str);
-		if (conj.empty())
+		neg = negationNormalForm(str);
+		if (neg.empty())
 		{
 			std::cout << "the formula has wrong format.\n";
 			return {};
 		}
-		std::cout << "conjonctive form : " << conj << '\n';
+		std::cout << "negative form : " << neg << '\n';
 		for (std::vector<int> set : sets)
 			trueSets.push_back(std::set<int>(set.begin(), set.end()));
-		return _evalSetConjForm(conj, trueSets);
+		return _evalSetNegativeForm(neg, trueSets);
 	}
 } // namespace ft

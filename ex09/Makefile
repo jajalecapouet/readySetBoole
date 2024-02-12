@@ -1,10 +1,10 @@
 NAME = exe
 CC = c++
-FLAGS = -Wall -Wextra -std=c++17
+FLAGS = -Wall -Wextra -Werror -std=c++17
 
 all :				${NAME}
 
-${NAME} :
+${NAME} :			main.cpp
 					${CC} ${FLAGS} main.cpp ../src/booleFunctions.cpp ../src/MyNatural.cpp -o $@
 
 clean :				

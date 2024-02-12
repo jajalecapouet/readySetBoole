@@ -49,6 +49,9 @@ namespace ft
 		us weigth = _getMaxWeigth();
 		us part;
 
+		if (d >= 1 || d < 0)
+			std::cout << "Beware, the entry should be in range [0, 1[, the result may be wrong due to a loss of accuracy or may be unexpetive\n";
+
 		while (weigth)
 		{
 			d *= BASE;

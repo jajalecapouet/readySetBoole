@@ -4,6 +4,8 @@
 
 int main()
 {
+	std::string	formula;
+	std::vector<int> result;
 	std::vector<std::vector<int> > sets({
 		{0, 1, 2},
 		{2, 1, 4},
@@ -11,15 +13,24 @@ int main()
 		{4, 5}
 	});
 
-	std::string formula("AC>A=B|D|");
-	std::vector<int> result = ft::eval_set(formula, sets);
-
-	std::cout << '{';
-	for (int i : result)
+	while (1)
 	{
-		std::cout << i << ' ';
+		std::cout << "insert a bool sentence :";
+		if (!getline(std::cin, formula))
+		{
+			std::cin.clear();
+			clearerr(stdin);
+		}
+		result = ft::eval_set(formula, sets);
+		std::cout << '{';
+		for (int i : result)
+		{
+			std::cout << i << ' ';
+		}
+		std::cout << "}\n";
 	}
-	std::cout << "}\n";
+
+
 
 	return 0;
 }

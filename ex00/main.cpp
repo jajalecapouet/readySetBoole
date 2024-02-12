@@ -4,24 +4,28 @@ using namespace ft;
 
 int main()
 {
+	std::string aStr;
+	std::string bStr;
+	unsigned int a;
+	unsigned int b;
 
-	unsigned int a = adderDemoVersion(4785891, 1247878);
-	std::cout << "a = " << a << "\n\n";
-
-	std::cout << "worst add possible : \n";
-	unsigned int b = adderDemoVersion(-1, 1);
-	std::cout << "b = " << b << "\n\n";
-
-	unsigned int c = adderDemoVersion(1023, 511);
-	std::cout << "c = " << c << "\n\n";
-
-	unsigned int d = adderDemoVersion(1023, -1);
-	std::cout << "c = " << d << "\n\n";
-
-	std::cout << "\n128 + 64 = " << adder(128, 64) << '\n';
-	std::cout << "\n75456 + 74110 = " << adder(75456, 74110) << '\n';
-	std::cout << "\n-1 + 1023 = " << adder(-1, 1023) << '\n';
-	std::cout << "\n1023 + -1 = " << adder(1023, -1) << '\n';
+	while ("trou")
+	{
+		try
+		{
+			std::cout << "\nput a value for a : ";
+			std::cin >> aStr;
+			std::cout << "\nput a value for b : ";
+			std::cin >> bStr;
+			a = std::stoi(aStr);
+			b = std::stoi(bStr);
+			std::cout << a << " + " << b << " = " << adderDemoVersion(a, b) << '\n';
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << "invalid arguments\n";
+		}
+	}
 
 	return 0;
 }
