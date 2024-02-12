@@ -8,7 +8,8 @@ ${NAME} :			main.cpp
 					${CC} ${FLAGS} main.cpp ../src/spaceFillingCurves.cpp -o $@
 
 clean :				
-					rm -f ${NAME} jaja.csv
+					rm -f ${NAME} jaja.csv graph.png
+					rm -rf .venv
 
 re :				clean all
 

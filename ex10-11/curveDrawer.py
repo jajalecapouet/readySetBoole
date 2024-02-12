@@ -1,6 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 
+
 def draw():
     x = []
     y = []
@@ -10,7 +11,8 @@ def draw():
             x.append(a)
             y.append(b)
     plt.plot(x, y, "b")
-    plt.show()
+    plt.savefig("graph.png")
+
 
 if __name__ == "__main__":
     draw()
