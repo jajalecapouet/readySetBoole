@@ -758,13 +758,13 @@ namespace ft
 		switch (str[idx])
 		{
 			case '!':
-				return _negateSet(_recuEvalSetConjForm(str, sets, --idx));
+				return _negateSet(_recuEvalSetNegativeForm(str, sets, --idx));
 			case '|':
-				lhs = &_recuEvalSetConjForm(str, sets, --idx);
-				return _joinSets(*lhs, _recuEvalSetConjForm(str, sets, --idx));
+				lhs = &_recuEvalSetNegativeForm(str, sets, --idx);
+				return _joinSets(*lhs, _recuEvalSetNegativeForm(str, sets, --idx));
 			case '&':
-				lhs = &_recuEvalSetConjForm(str, sets, --idx);
-				return _interSets(*lhs, _recuEvalSetConjForm(str, sets, --idx));
+				lhs = &_recuEvalSetNegativeForm(str, sets, --idx);
+				return _interSets(*lhs, _recuEvalSetNegativeForm(str, sets, --idx));
 			default:
 				return _assignSet(str[idx], sets);
 		}
