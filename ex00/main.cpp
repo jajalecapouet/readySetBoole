@@ -17,9 +17,9 @@ int main()
 			std::cin >> aStr;
 			std::cout << "\nput a value for b : ";
 			std::cin >> bStr;
-			a = std::stoi(aStr);
-			b = std::stoi(bStr);
-			std::cout << a << " + " << b << " = " << adderDemoVersion(a, b) << '\n';
+			a = std::stol(aStr);
+			b = std::stol(bStr);
+			std::cout << a << " + " << b << " =\n" << adderDemoVersion(a, b) << '\n';
 		}
 		catch (const std::exception& e)
 		{

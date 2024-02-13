@@ -10,56 +10,61 @@ namespace ft
 
 	unsigned int	adderDemoVersion(unsigned int a, unsigned int b)
 	{
-		int loop = 0;
-		while (b)
+		unsigned int	compareTo;
+		unsigned int	result;
+		bool			retain;
+		bool			bitA;
+		bool			bitB;
+
+		compareTo = 1;
+		retain = false;
+		result = 0;
+		for (unsigned int i = 0; i < 32; ++i)
 		{
-			std::cout << "loop " << ++loop << '\n';
-			std::cout << "a      = " << MyNatural(a) << '\n';
-			std::cout << "b      = " << MyNatural(b) << '\n';
-			unsigned int	retain = 0;
-			unsigned int	compareTo = 1;
-			unsigned int	next;
-			for (int i = 0; i < 32; ++i)
+			std::cout << MyNatural(a) << " (a)\n";
+			std::cout << MyNatural(b) << " (b)\n[";
+			for (unsigned int j = 0; j < 32; ++j)
 			{
-				next = compareTo << 1;
-				bool bitA = a & compareTo;
-				bool bitB = b & compareTo;
-				if (bitB)
-				{
-					a ^= compareTo;
-					if (bitA)
-							retain |= next;
-				}
-				compareTo = next;
+				if (j && !(j % 4))
+					std::cout << ' ';
+				if (j == 31 - i)
+					std::cout << '^';
+				else
+					std::cout << '~';
 			}
-			b = retain;
+			bitA = a & compareTo;
+			bitB = b & compareTo;
+			std::cout << "]\nbitA = " << bitA << " | bitB = " << bitB << " | retain = " << retain << '\n';
+			result |= compareTo * (bitA ^ bitB ^ retain);
+			std::cout << "bit result = " << (bitA ^ bitB ^ retain) << " | retain = ";
+			retain = (bitA & bitB) | (retain & (bitA ^ bitB));
+			std::cout << retain << '\n';
+			std::cout << MyNatural(result) << " (building result)\n\n\n";
+			compareTo <<= 1;
 		}
-		std::cout << "result = " << MyNatural(a) << '\n';
-		return a;
+		return result;
 	}
 
 	unsigned int	adder(unsigned int a, unsigned int b)
 	{
-		while (b)
+		unsigned int	compareTo;
+		unsigned int	result;
+		bool			retain;
+		bool			bitA;
+		bool			bitB;
+
+		compareTo = 1;
+		retain = false;
+		result = 0;
+		for (int i = 0; i < 32; ++i)
 		{
-			unsigned int	retain = 0;
-			unsigned int	compareTo = 1;
-			for (int i = 0; i < 32; ++i)
-			{
-				unsigned int	next = compareTo << 1;
-				bool bitA = a & compareTo;
-				bool bitB = b & compareTo;
-				if (bitB)
-				{
-					a ^= compareTo;
-					if (bitA)
-						retain |= next;
-				}
-				compareTo = next;
-			}
-			b = retain;
+			bitA = a & compareTo;
+			bitB = b & compareTo;
+			result |= compareTo * (bitA ^ bitB ^ retain);
+			retain = (bitA & bitB) | (retain & (bitA ^ bitB));
+			compareTo <<= 1;
 		}
-		return a;
+		return result;
 	}
 
 	unsigned int	multiplier(unsigned int a, unsigned int b)
