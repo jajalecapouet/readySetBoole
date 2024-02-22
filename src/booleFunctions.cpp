@@ -35,12 +35,13 @@ namespace ft
 			bitA = a & compareTo;
 			bitB = b & compareTo;
 			std::cout << "]\nbitA = " << bitA << " | bitB = " << bitB << " | retain = " << retain << '\n';
-			result |= compareTo * (bitA ^ bitB ^ retain);
+			if (bitA ^ bitB ^ retain)
+				result = result | compareTo;
 			std::cout << "bit result = " << (bitA ^ bitB ^ retain) << " | retain = ";
 			retain = (bitA & bitB) | (retain & (bitA ^ bitB));
 			std::cout << retain << '\n';
 			std::cout << MyNatural(result) << " (building result)\n\n\n";
-			compareTo <<= 1;
+			compareTo = compareTo << 1;
 		}
 		return result;
 	}
@@ -60,9 +61,10 @@ namespace ft
 		{
 			bitA = a & compareTo;
 			bitB = b & compareTo;
-			result |= compareTo * (bitA ^ bitB ^ retain);
+			if (bitA ^ bitB ^ retain)
+				result = result | compareTo;
 			retain = (bitA & bitB) | (retain & (bitA ^ bitB));
-			compareTo <<= 1;
+			compareTo = compareTo << 1;
 		}
 		return result;
 	}
@@ -75,7 +77,7 @@ namespace ft
 		{
 			if (b & compareTo)
 				result = adder(result, a << i);
-			compareTo <<= 1;
+			compareTo = compareTo << 1;
 		}
 		return result;
 	}
@@ -91,8 +93,8 @@ namespace ft
 			bool	bitA = compareTo & a;
 			bool	bitB = compareTo & b;
 			if (bitA ^ bitB)
-				result |= compareTo;
-			compareTo <<= 1;
+				result = result | compareTo;
+			compareTo = compareTo << 1;
 		}
 		return result;
 	}
