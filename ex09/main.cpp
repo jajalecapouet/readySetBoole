@@ -7,7 +7,7 @@ int main()
 	std::string	formula;
 	std::vector<int> result;
 	std::vector<std::vector<int> > sets({
-		{0, 1, 2},
+		{0, 1, 2, 14, 3, 4, 5},
 		{2, 1, 4},
 		{2, 3, 4},
 		{4, 5}

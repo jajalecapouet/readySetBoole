@@ -1,6 +1,19 @@
 #include "../includes/booleFunctions.hpp"
+#include <cmath>
+#include <cstring>
 
 using namespace ft;
+
+unsigned int myPow(int a, int b)
+{
+	unsigned int res = 1;
+
+	while (b--)
+	{
+		res *= a;
+	}
+	return res;
+}
 
 int main()
 {
@@ -42,6 +55,8 @@ int main()
 	std::string bStr;
 	unsigned int a;
 	unsigned int b;
+	unsigned int aShifted;
+
 	
 	while ("trou")
 	{
@@ -53,6 +68,37 @@ int main()
 			std::cin >> bStr;
 			a = std::stoi(aStr);
 			b = std::stoi(bStr);
+			aStr.clear();
+			bStr.clear();
+			MyNatural natB(b);
+			bool first = true;
+			const bool* data = natB.getData();
+
+			std::cout << "\nb = " << b << " = " << natB <<  " which is compounded by :\n";
+			aStr += "     b = ";
+			bStr += "result = ";
+			for (int i = 0; i < 32; ++i)
+			{
+				if (data[31 - i])
+				{
+					if (!first && i < 32)
+					{
+						aStr += " + ";
+						bStr += " + ";
+					}
+					first = false;
+					aStr += "2^";
+					aStr += std::to_string(i);
+					bStr += std::to_string(a);
+					bStr += " << ";
+					bStr += std::to_string(i);
+					bStr += " (= ";
+					aShifted = a << i;
+					bStr += std::to_string(aShifted);
+					bStr += ')';
+				}
+			}
+			std::cout << aStr << '\n' << bStr << '\n';
 			std::cout << a << " * " << b << " = " << multiplier(a, b) << '\n';
 		}
 		catch (const std::exception& e)

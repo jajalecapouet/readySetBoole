@@ -6,6 +6,7 @@ int main()
 {
 	std::string aStr;
 	unsigned int a;
+	unsigned int Gray;
 
 	while ("trou")
 	{
@@ -14,7 +15,8 @@ int main()
 			std::cout << "put a value : ";
 			std::cin >> aStr;
 			a = std::stoi(aStr);
-			std::cout << MyNatural(a) << " which has a Grey code value = " << GrayCode(a) << '\n';
+			Gray = GrayCode(a);
+			std::cout << a << " has a Grey code boolean values = " << MyNatural(Gray) << " which as normal binaries is equal to " << Gray << '\n';
 		}
 		catch (const std::exception& e)
 		{

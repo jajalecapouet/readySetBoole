@@ -718,6 +718,33 @@ namespace ft
 		return bigger;
 	}
 
+	std::set<int>&	_deleteSets(std::set<int>& lhs, std::set<int>& rhs)
+	{
+		std::set<int>::iterator it;
+
+		if (lhs.size() < rhs.size())
+		{
+			it = lhs.begin();
+			while (it != lhs.end())
+			{
+				if (rhs.find(*it) != rhs.end())
+					it = lhs.erase(it);
+				else
+					++it;
+			}
+		}
+		else
+		{
+			it = rhs.begin();
+			{
+				while (it != rhs.end())
+					lhs.erase(*(it++));
+			}
+		}
+		delete (&rhs);
+		return lhs;
+	}
+
 	std::set<int>&	_interSets(std::set<int>& lhs, std::set<int>& rhs)
 	{
 		std::set<int>& smaller = lhs.size() < rhs.size() ? lhs : rhs;
@@ -733,6 +760,24 @@ namespace ft
 		}
 		delete (&bigger);
 		return smaller;
+	}
+
+	std::set<int>&	_conjSets(std::pair<std::set<int>*, bool> lhs, std::pair<std::set<int>*, bool> rhs)
+	{
+		if (lhs.second)
+		{
+			if (rhs.second)
+			{
+				lhs.first->clear();
+				delete rhs.first;
+				return *(lhs.first);
+			}
+			else
+				return _deleteSets(*(rhs.first), *(lhs.first));
+		}
+		if (rhs.second)
+			return _deleteSets(*(lhs.first), *(rhs.first));
+		return _interSets(*(lhs.first), *(rhs.first));
 	}
 
 	std::set<int>&	_negateSet(std::set<int>& set)
@@ -758,20 +803,43 @@ namespace ft
 		return *toRet;
 	}
 
+	std::set<int>&	_recuEvalSetNegativeForm(const std::string& str, const std::vector<std::set<int> >& sets, std::string::size_type& idx);
+
+	std::pair<std::set<int>*, bool>	_recuEvalSetConjCase(const std::string& str, const std::vector<std::set<int> >& sets, std::string::size_type& idx)
+	{
+		std::set<int> *lhsJoin; // Those variables are to avoid a warning from Werror : -Wunsequenced
+		std::pair<std::set<int>*, bool> lhsConj;
+
+		switch (str[idx])
+		{
+			case '!':
+				return std::pair<std::set<int>*, bool>(&_recuEvalSetNegativeForm(str, sets, --idx), true);
+			case '|':
+				lhsJoin = &_recuEvalSetNegativeForm(str, sets, --idx);
+				return std::pair<std::set<int>*, bool>(&_joinSets(*lhsJoin, _recuEvalSetNegativeForm(str, sets, --idx)), false);
+			case '&':
+				lhsConj = _recuEvalSetConjCase(str, sets, --idx);
+				return std::pair<std::set<int>*, bool>(&_conjSets(lhsConj, _recuEvalSetConjCase(str, sets, --idx)), false);
+			default:
+				return std::pair<std::set<int>*, bool>(&_assignSet(str[idx], sets), false);
+		}
+	}
+
 	std::set<int>&	_recuEvalSetNegativeForm(const std::string& str, const std::vector<std::set<int> >& sets, std::string::size_type& idx)
 	{
-		std::set<int> *lhs; // This variable is to avoid a warning from Werror : -Wunsequenced
+		std::set<int> *lhsJoin; // Those variables are to avoid a warning from Werror : -Wunsequenced
+		std::pair<std::set<int>*, bool> lhsConj;
 
 		switch (str[idx])
 		{
 			case '!':
 				return _negateSet(_recuEvalSetNegativeForm(str, sets, --idx));
 			case '|':
-				lhs = &_recuEvalSetNegativeForm(str, sets, --idx);
-				return _joinSets(*lhs, _recuEvalSetNegativeForm(str, sets, --idx));
+				lhsJoin = &_recuEvalSetNegativeForm(str, sets, --idx);
+				return _joinSets(*lhsJoin, _recuEvalSetNegativeForm(str, sets, --idx));
 			case '&':
-				lhs = &_recuEvalSetNegativeForm(str, sets, --idx);
-				return _interSets(*lhs, _recuEvalSetNegativeForm(str, sets, --idx));
+				lhsConj = _recuEvalSetConjCase(str, sets, --idx);
+				return _conjSets(lhsConj, _recuEvalSetConjCase(str, sets, --idx));
 			default:
 				return _assignSet(str[idx], sets);
 		}
